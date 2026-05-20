@@ -74,8 +74,9 @@ message = st.text_area("", height=150)
 if st.button("Predire / Predict"):
 
     if message != '':
-        text_processed = preprocessor.transform([cleaner_lemmatizer(message)]).toarray()
-        y_pred = model.predict(text_processed)
+        text_cleaned = cleaner_lemmatizer(message) 
+        text_vectorized = preprocessor.transform([text_cleaned]).toarray()
+        y_pred = model.predict(text_vectorized)
 
         result = 'Spam' if y_pred[0] == 1 else 'Ham'
         if result == "Spam":
