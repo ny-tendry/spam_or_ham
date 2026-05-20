@@ -3,6 +3,7 @@ from nltk.corpus import stopwords
 import spacy
 import joblib
 import streamlit as st
+from datetime import datetime
 
 stop_words_en = stopwords.words('english')
 stop_words_fr = stopwords.words('french')
@@ -62,16 +63,44 @@ def cleaner_lemmatizer(message):
 preprocessor = joblib.load('./preprocessing_v1.pkl')
 model = joblib.load('./model_v1.pkl')
 
-while True:
-    message = input("Entrez votre message : ")
+st.header(" :blue[Spam] or  :green[Ham]", text_alignment="center")
+
+st.markdown("**Testez vos SMS ici / Test your SMS here:**", text_alignment="center")
+message = st.text_area("", height=150)
+
+if st.button("Predire / Predict"):
 
     if message != '':
         text_processed = preprocessor.transform([cleaner_lemmatizer(message)]).toarray()
         y_pred = model.predict(text_processed)
 
         result = 'Spam' if y_pred[0] == 1 else 'Ham'
+        if result == "Spam":
+            st.success(f":blue[{result}]")
+        else:
+            st.success(f":green[{result}]")
+
     else:
-        message = input("Entrez votre message : ")
+        st.error("Veuillez entrer un SMS a predire!")
 
-    print(result)
+st.markdown("""
+    ---
+""")
+st.markdown("""
+    Bienvenue.
+    Cette plateforme détecte si un SMS est un **spam** ou un message légitime (**ham**).
+    Entrez votre SMS ci-dessus et cliquez sur **Prédire** pour obtenir le résultat.
+    Elle supporte les langues suivantes : Français · Anglais
 
+    Welcome.
+    This platform detects whether an SMS is **spam** or a legitimate message (**ham**).
+    Enter your SMS above and click **Predict** to get the result.
+    Supported languages : French · English
+""", unsafe_allow_html=True, text_alignment='center')
+
+
+st.markdown(f"""
+    <div style="text-align: center; opacity: 0.5; font-size: 12px;">
+        © {datetime.now().year} ny-tendry — Tous droits réservés
+    </div>
+""", unsafe_allow_html=True)
