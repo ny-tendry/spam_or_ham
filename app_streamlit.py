@@ -1,9 +1,12 @@
 import re
+import nltk
 from nltk.corpus import stopwords
 import spacy
 import joblib
 import streamlit as st
 from datetime import datetime
+
+nltk.download('stopwords', quiet=True)
 
 stop_words_en = stopwords.words('english')
 stop_words_fr = stopwords.words('french')
